@@ -1,0 +1,10 @@
+# Python environment for scripts/convert.py, reference.py, bench_reference.py, make_fixtures.py and
+# colormaps.py. The parity fixtures in this repository were made with exactly these versions.
+mlx==0.32.3
+mlx-vlm==0.7.6
+numpy==2.5.4
+torch==2.14.1
+safetensors==0.8.0
+huggingface-hub==2.2.0
+opencv-python-headless==5.0.0.93
+matplotlib==3.11.2
