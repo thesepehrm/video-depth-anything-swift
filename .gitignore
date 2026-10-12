@@ -1,0 +1,9 @@
+.venv/
+weights/
+parity/fixtures/
+.build/
+.swiftpm/
+DerivedData/
+.DS_Store
+__pycache__/
+*.pth
