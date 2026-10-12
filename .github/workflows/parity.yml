@@ -1,0 +1,26 @@
+name: Parity
+# Full parity run against mlx-vlm on a self-hosted Apple silicon Mac. Downloads the official
+# Apache-2.0 checkpoint (116 MB), converts it, generates the golden fixtures, and runs every suite.
+on: workflow_dispatch
+jobs:
+  parity:
+    runs-on: [self-hosted, macOS, ARM64]
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python reference environment
+        run: |
+          set -euo pipefail
+          uv venv .venv --python 3.12
+          uv pip install --python .venv/bin/python -r scripts/requirements.txt
+      - name: Convert weights
+        run: .venv/bin/python scripts/convert.py --out weights/video-depth-anything-small
+      - name: Golden fixtures
+        run: |
+          .venv/bin/python scripts/reference.py --weights weights/video-depth-anything-small \
+            --video Tests/VideoDepthAnythingTests/Resources/static-scene.mp4 --out parity/fixtures
+      - name: MLX Metal kernels
+        run: scripts/build-metallib.sh
+      - name: Unit and parity tests
+        run: |
+          VDA_WEIGHTS="$PWD/weights/video-depth-anything-small" VDA_FIXTURES="$PWD/parity/fixtures" swift test
